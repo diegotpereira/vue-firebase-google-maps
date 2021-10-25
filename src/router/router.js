@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
+import firebase from 'firebase'
 
 import Login from '@/views/Login'
 import Registro from '@/views/Registro'
@@ -8,39 +9,39 @@ import Cliente from '@/views/Cliente'
 
 const routes = [{
         path: '/registro',
-        name: 'registro',
+        name: 'Registro',
         component: Registro,
-        // meta: {
-        //     guest: true
-        // }
+        meta: {
+            guest: true
+        }
     },
     {
         path: '/login',
-        name: 'login',
+        name: 'Login',
         component: Login,
-        // meta: {
-        //     guest: true
-        // }
+        meta: {
+            guest: true
+        }
     },
     {
         path: '/admin',
-        name: 'admin',
+        name: 'Admin',
         component: Admin,
-        // meta: {
-        //     auth: true
-        // }
+        meta: {
+            auth: true
+        }
     },
     {
         path: '/motorista',
-        name: 'motorista',
+        name: 'Motorista',
         component: Motorista,
-        // meta: {
-        //     auth: true
-        // }
+        meta: {
+            auth: true
+        }
     },
     {
         path: '/cliente',
-        name: 'cliente',
+        name: 'Cliente',
         component: Cliente,
         // meta: {
         //     auth: true
@@ -52,5 +53,34 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 });
+
+router.beforeEach((to, from, next) => {
+    firebase.auth().onAuthStateChanged(userAuth => {
+        if (!userAuth && to.matched.some(record => record.meta.requiresAuth)) {
+            next({
+                name: 'Login'
+            })
+        } else if (userAuth) {
+            if (to.matched.some(record => record.meta.guest)) {
+                next(from.fullPath)
+            } else {
+                firebase.firestore().collection("roles").doc(userAuth.uid).get().then(snapShot => {
+                    if (snapShot.data().isAdmin) {
+                        next({
+                            name: 'Admin'
+                        })
+                    } else {
+                        next({
+                            name: 'Motorista'
+                        })
+                    }
+                })
+            }
+        } else {
+            next()
+        }
+    })
+    next()
+})
 
 export default router;
