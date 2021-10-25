@@ -38,7 +38,17 @@ export default {
   },
  methods: {
     signOutButtonPressed() {
-        
+        firebase
+        .auth()
+        .signOut()
+        .then(() => {
+            this.$router.push({
+                name: "Login"
+            });
+        })
+        .catch(error => {
+            console.log(error.message);
+        });
     },
     startLocationUpdates() {},
     stopLocationUpdates() {}
