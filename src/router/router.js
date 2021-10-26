@@ -5,7 +5,6 @@ import Login from '@/views/Login'
 import Registro from '@/views/Registro'
 import Admin from '@/views/Admin'
 import Motorista from '@/views/Motorista'
-import Cliente from '@/views/Cliente'
 
 const routes = [{
         path: '/registro',
@@ -38,14 +37,6 @@ const routes = [{
         meta: {
             auth: true
         }
-    },
-    {
-        path: '/cliente',
-        name: 'Cliente',
-        component: Cliente,
-        // meta: {
-        //     auth: true
-        // }
     },
 ];
 

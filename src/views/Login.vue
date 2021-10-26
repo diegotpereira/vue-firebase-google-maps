@@ -14,7 +14,7 @@
     >
     <br>
     <div class="btn-login">
-      <button @click="login">Login</button>
+      <button @click="login">Entrar</button>
     </div>
     <p>
       Você não tem conta?
